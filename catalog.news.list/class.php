@@ -118,13 +118,21 @@ class KamiCatalogNewsList extends CBitrixComponent
             $this->arResult['SECTION_ITEMS'][] = $arSection;
         }
 
+        foreach($this->arResult['NEWS_ITEMS'] as $k => $v){
+            foreach($this->arResult['SECTION_ITEMS'] as $vv){
+                if(in_array($v['ID'],$vv['NEWS_ID'])){
+                    $this->arResult['NEWS_ITEMS'][$k]['SECTIONS_NAME'][] = $vv['NAME'];
+                    $this->arResult['NEWS_ITEMS'][$k]['SECTIONS_ID'][] = $vv['ID'];
+                }
+            }
+        }
+
         if(!sizeof($arSectionIds)) return;
 
         $res = \Bitrix\Catalog\GroupTable::getList([
             'filter' => ['BASE' => 'Y'],
             'cache' => ['ttl' => $this->arParams['CACHE_TIME']],
         ]);
-
 
         if($arGroup = $res->fetch()) {
             $res = \Bitrix\Iblock\Iblock::wakeUp($this->arParams['CATALOG_IBLOCK_ID'])->getEntityDataClass()::getList([
@@ -163,15 +171,6 @@ class KamiCatalogNewsList extends CBitrixComponent
             }
 
             $this->arResult['PRODUCT_ITEMS_COUNT'] = $res->getCount();
-        }
-
-        foreach($this->arResult['NEWS_ITEMS'] as $k => $v){
-            foreach($this->arResult['SECTION_ITEMS'] as $vv){
-                if(in_array($v['ID'],$vv['NEWS_ID'])){
-                    $this->arResult['NEWS_ITEMS'][$k]['SECTIONS_NAME'][] = $vv['NAME'];
-                    $this->arResult['NEWS_ITEMS'][$k]['SECTIONS_ID'][] = $vv['ID'];
-                }
-            }
         }
     }
 
