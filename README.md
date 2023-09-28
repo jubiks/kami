@@ -2,8 +2,7 @@
 
 Вызов компонента:
 
-`
-<?$APPLICATION->IncludeComponent(
+`<?$APPLICATION->IncludeComponent(
 	"kami:catalog.news.list", 
 	".default", 
 	array(
@@ -15,8 +14,7 @@
 		"COMPONENT_TEMPLATE" => ".default"
 	),
 	false
-);?>
-`
+);?>`
 
 Тестирование https://develop.jubiks.pro/kami/
 
