@@ -2,7 +2,8 @@
 
 Вызов компонента:
 
-`<?$APPLICATION->IncludeComponent(
+```php
+<?$APPLICATION->IncludeComponent(
 	"kami:catalog.news.list", 
 	".default", 
 	array(
@@ -14,8 +15,8 @@
 		"COMPONENT_TEMPLATE" => ".default"
 	),
 	false
-);?>`
+);?>
+```
 
-Тестирование https://develop.jubiks.pro/kami/
-
+Тестирование https://develop.jubiks.pro/kami/.
 На страницу дополнительно вывел содержимое массива `$arResult` с данными которые приходят в шаблон компонента
