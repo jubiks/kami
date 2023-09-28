@@ -85,8 +85,14 @@ class KamiCatalogNewsList extends CBitrixComponent
 
     private function GetData()
     {
-        $arNewsIds = [];
         $this->arResult['NEWS_ITEMS'] = [];
+        $this->arResult['SECTION_ITEMS'] = [];
+        $this->arResult['PRODUCT_ITEMS'] = [];
+        $this->arResult['PRODUCT_ITEMS_COUNT'] = 0;
+
+        $arNewsIds = [];
+        $arSectionIds = [];
+
         $res = \Bitrix\Iblock\ElementTable::getList([
             'select' => ['ID', 'NAME', 'ACTIVE_FROM'],
             'filter' => ['IBLOCK_ID' => $this->arParams['NEWS_IBLOCK_ID'], '=ACTIVE' => 'Y'],
@@ -99,8 +105,8 @@ class KamiCatalogNewsList extends CBitrixComponent
             $this->arResult['NEWS_ITEMS'][] = $arElement;
         }
 
-        $arSectionIds = [];
-        $this->arResult['SECTION_ITEMS'] = [];
+        if(!sizeof($arNewsIds)) return;
+
         $res = \Bitrix\Iblock\Model\Section::compileEntityByIblock($this->arParams['CATALOG_IBLOCK_ID'])::getList([
             'select' => ['ID', 'NAME', 'NEWS_ID' => $this->arParams['PROPERTY_NEWS_CODE']],
             'filter' => ['IBLOCK_ID' => $this->arParams['CATALOG_IBLOCK_ID'], $this->arParams['PROPERTY_NEWS_CODE'] => $arNewsIds, 'GLOBAL_ACTIVE' => 'Y', '=ACTIVE' => 'Y'],
@@ -112,13 +118,14 @@ class KamiCatalogNewsList extends CBitrixComponent
             $this->arResult['SECTION_ITEMS'][] = $arSection;
         }
 
+        if(!sizeof($arSectionIds)) return;
+
         $res = \Bitrix\Catalog\GroupTable::getList([
             'filter' => ['BASE' => 'Y'],
             'cache' => ['ttl' => $this->arParams['CACHE_TIME']],
         ]);
 
-        $this->arResult['PRODUCT_ITEMS'] = [];
-        $this->arResult['PRODUCT_ITEMS_COUNT'] = 0;
+
         if($arGroup = $res->fetch()) {
             $res = \Bitrix\Iblock\Iblock::wakeUp($this->arParams['CATALOG_IBLOCK_ID'])->getEntityDataClass()::getList([
                 'count_total' => true,
